@@ -16,8 +16,7 @@ void Mototask(void const * argument)
 {
   for(;;)
   {
-		//SetMotoCurrent(&hcan1, Ahead, 3000, 3000, 3000, 3000);
-		CAN1_Set_AheadCur(300, 200, 300, 300);
+		SetMotoCurrent(&hcan1, Ahead, 3000, 300, 3000, 3000);
     osDelay(10);
 		zbwtest++;
 		
