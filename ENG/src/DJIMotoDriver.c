@@ -6,7 +6,7 @@ void UpdateMotoAngle(MotoStateTD* MotoState);
 void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
 
 uint8_t rx_data[8]; //FIFO接收缓存区
-
+MotoStateTD MotoState[16];
 
 // 发送电机电流值
 // 参数：can句柄，电机组别，电机1 2 3 4电流
