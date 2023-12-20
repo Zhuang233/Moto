@@ -49,6 +49,7 @@
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId moto_taskHandle;
+osThreadId LEDHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -57,6 +58,7 @@ osThreadId moto_taskHandle;
 
 void StartDefaultTask(void const * argument);
 void Mototask(void const * argument);
+void led_task(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -108,8 +110,12 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of moto_task */
-  osThreadDef(moto_task, Mototask, osPriorityIdle, 0, 128);
+  osThreadDef(moto_task, Mototask, osPriorityHigh, 0, 128);
   moto_taskHandle = osThreadCreate(osThread(moto_task), NULL);
+
+  /* definition and creation of LED */
+  osThreadDef(LED, led_task, osPriorityHigh, 0, 128);
+  LEDHandle = osThreadCreate(osThread(LED), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -151,6 +157,24 @@ __weak void Mototask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END Mototask */
+}
+
+/* USER CODE BEGIN Header_led_task */
+/**
+* @brief Function implementing the LED thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_led_task */
+__weak void led_task(void const * argument)
+{
+  /* USER CODE BEGIN led_task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END led_task */
 }
 
 /* Private application code --------------------------------------------------*/
