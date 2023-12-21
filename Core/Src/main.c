@@ -25,6 +25,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "can_zbw.h"
+#include "trace.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -93,8 +94,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	can_filter_init();
 	
-	
-	vTraceEnable(TRC_START);// 使能Trace,必须在硬件完成初始化之后，第一个内核对象创建之前
+	trace_init();
+
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */

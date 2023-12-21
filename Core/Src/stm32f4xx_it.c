@@ -22,6 +22,8 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "trcRecorder.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,6 +61,7 @@ extern CAN_HandleTypeDef hcan1;
 extern TIM_HandleTypeDef htim7;
 
 /* USER CODE BEGIN EV */
+extern TraceISRHandle_t Can1Rx0ISRHandle;
 
 /* USER CODE END EV */
 
@@ -166,11 +169,11 @@ void DebugMon_Handler(void)
 void CAN1_RX0_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
-
+	xTraceISRBegin(Can1Rx0ISRHandle);
   /* USER CODE END CAN1_RX0_IRQn 0 */
   HAL_CAN_IRQHandler(&hcan1);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
-
+	xTraceISREnd(0);
   /* USER CODE END CAN1_RX0_IRQn 1 */
 }
 
@@ -194,11 +197,9 @@ void CAN1_RX1_IRQHandler(void)
 void TIM7_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM7_IRQn 0 */
-
   /* USER CODE END TIM7_IRQn 0 */
   HAL_TIM_IRQHandler(&htim7);
   /* USER CODE BEGIN TIM7_IRQn 1 */
-
   /* USER CODE END TIM7_IRQn 1 */
 }
 
