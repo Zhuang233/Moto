@@ -57,7 +57,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)  //can2
 void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 	CAN_RxHeaderTypeDef Rx_Msg;
 
-  HAL_CAN_GetRxMessage(hcan, RxFifo, &Rx_Msg, rx_data);
+  HAL_CAN_GetRxMessage(hcan, RxFifo, &Rx_Msg, rx_data);					// 接收can1 fifo0邮箱的数据帧。不接收会导致fifo邮箱一直爆满，无限进入接收中断，卡死所有任务。
 
   switch (Rx_Msg.StdId)			//can1 motor message decode
   {
