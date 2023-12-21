@@ -57,7 +57,7 @@ void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)  //can2
 void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 	CAN_RxHeaderTypeDef Rx_Msg;
 
-  //HAL_CAN_GetRxMessage(hcan, RxFifo, &Rx_Msg, rx_data);
+  HAL_CAN_GetRxMessage(hcan, RxFifo, &Rx_Msg, rx_data);
 
   switch (Rx_Msg.StdId)			//can1 motor message decode
   {
