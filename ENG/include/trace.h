@@ -5,5 +5,5 @@
 
 
 void trace_init(void);
-
+void trace_current(int current);
 #endif

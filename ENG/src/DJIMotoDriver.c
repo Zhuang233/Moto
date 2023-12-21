@@ -1,5 +1,5 @@
 #include "DJIMotoDriver.h"
-
+#include "trace.h"
 
 void UpdateMotoState(MotoStateTD* MotoState);
 void UpdateMotoAngle(MotoStateTD* MotoState);
@@ -90,7 +90,10 @@ void UpdateMotoState(MotoStateTD* MotoState){
 	
 	MotoState->angle_actual = (uint16_t)(rx_data[0] << 8 | rx_data[1]);
 	MotoState->speed_actual = (int16_t)(rx_data[2] << 8 | rx_data[3]); 
+	
 	MotoState->real_current = (int16_t)(rx_data[4] << 8 | rx_data[5]);
+	trace_current(MotoState->real_current);
+	
 	MotoState->temperature = rx_data[6];
   
   if(MotoState->first_run == true)                  //first_run为true时，记下初始位置
