@@ -50,16 +50,16 @@ typedef struct Pid_Object
   
   void (*pid_calculate)(struct Pid_Object *pid,float desired,float measured); //< pid calculate
   
-}PidObject;
+}PidTD;
 
-void pidInit (PidObject* pid, 
+void pidInit (PidTD* pid, 
 							const float iLimit,
 							const float outLimit,
 							const float kp,
 							const float ki,
 							const float kd);
 							
-void pid_calculate(PidObject* pid,float desired,float measured);
-void pidClearIntegral(PidObject *pid);
+void pid_calculate(PidTD* pid,float desired,float measured);
+void pidClearIntegral(PidTD *pid);
 
 #endif

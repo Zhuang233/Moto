@@ -8,7 +8,7 @@ void GetDt(TimeTD *time, uint32_t time_unit);
 void float_constraint(float *data,float max,float min);
 void pidTimeInit(TimeTD *time);
 
-void pidInit (PidObject* pid, 
+void pidInit (PidTD* pid, 
 							const float iLimit,
 							const float outLimit,
 							const float kp,
@@ -33,14 +33,14 @@ void pidInit (PidObject* pid,
   pid->pid_calculate = pid_calculate;
 }
 
-void pidParameterSet(PidObject* pid,float kp,float ki,float kd)
+void pidParameterSet(PidTD* pid,float kp,float ki,float kd)
 {
 	pid->kp = kp;
 	pid->ki = ki;
 	pid->kd = kd;
 }
 
-void pid_calculate(PidObject* pid,float desired,float measured)
+void pid_calculate(PidTD* pid,float desired,float measured)
 {
   GetDt(&pid->time, SECOND);
   if(pid->first_cal == true)
