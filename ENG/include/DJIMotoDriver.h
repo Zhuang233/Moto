@@ -51,6 +51,6 @@ typedef struct
 extern MotoStateTD MotoState[16];
 
 void SetMotoCurrent(CAN_HandleTypeDef* hcan, MotoGroupe group, int16_t C1, int16_t C2, int16_t C3, int16_t C4);
-void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
+void SaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
 void CAN1_Set_AheadCur(int16_t C1, int16_t C2, int16_t C3, int16_t C4);
 #endif

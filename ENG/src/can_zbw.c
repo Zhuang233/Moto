@@ -68,7 +68,7 @@ void can_filter_init(void)
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	if(hcan == &hcan1){
-		SaveMotoCurrent(hcan,CAN_RX_FIFO0);
+		SaveMotoMsg(hcan,CAN_RX_FIFO0);
 	}
 	else{
 		// TODO: 瓴控电机消息处理
@@ -78,5 +78,5 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-  SaveMotoCurrent(hcan,CAN_RX_FIFO0);
+  SaveMotoMsg(hcan,CAN_RX_FIFO0);
 }

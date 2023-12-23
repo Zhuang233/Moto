@@ -40,8 +40,8 @@ void SetMotoCurrent(CAN_HandleTypeDef* hcan, MotoGroupe group, int16_t C1, int16
   HAL_CAN_AddTxMessage(hcan, &Tx_Msg, TX_Data, &send_mail_box);    //将数据储存进邮箱FIFOx
 }
 
-// 接收电流值
-void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
+// 接收电机反馈消息
+void SaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 	CAN_RxHeaderTypeDef Rx_Msg;
 
   HAL_CAN_GetRxMessage(hcan, RxFifo, &Rx_Msg, rx_data);					// 接收can1 fifo0邮箱的数据帧。不接收会导致fifo邮箱一直爆满，无限进入接收中断，卡死所有任务。
