@@ -40,19 +40,6 @@ void SetMotoCurrent(CAN_HandleTypeDef* hcan, MotoGroupe group, int16_t C1, int16
   HAL_CAN_AddTxMessage(hcan, &Tx_Msg, TX_Data, &send_mail_box);    //将数据储存进邮箱FIFOx
 }
 
-
-
-
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)  //can1
-{
-  SaveMotoCurrent(hcan,CAN_RX_FIFO0);
-}
-
-void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)  //can2
-{
-  SaveMotoCurrent(hcan,CAN_RX_FIFO1);
-}
-
 // 接收电流值
 void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 	CAN_RxHeaderTypeDef Rx_Msg;
@@ -73,7 +60,7 @@ void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 				static uint8_t i = 0;
 				//get motor id
 				i = Rx_Msg.StdId - CAN_Motor1_ID; // 组内编号
-				if(RxFifo == CAN_RX_FIFO1) i += 8; // 加上组别偏移
+				if(hcan == &hcan2) i += 8; // 加上组别偏移
 				UpdateMotoState(&MotoState[i]);
 				break;
 			}
