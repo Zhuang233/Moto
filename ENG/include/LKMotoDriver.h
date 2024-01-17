@@ -21,6 +21,19 @@ typedef enum
 	LK_Motor8_ID = 0x148
 }LKMotorIdTD;
 
+
+typedef struct{
+	// TODO: 完善电机状态
+	uint8_t temperature;	//单位：度
+	int16_t current;			//-2048~2048 -> -33A~33A
+	int16_t speed;				//单位：度/秒
+	uint16_t encoder;			//编码器位置0~16383
+	uint16_t maxSpeed;			//速度绝对值限制
+	
+
+}LKMotoStateTD;
+
+
 void LKSetSpeed(LKMotorIdTD moto_id, uint32_t speed);
 
 #endif

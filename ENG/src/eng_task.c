@@ -38,6 +38,7 @@ void TestTask(void const * argument)
 
 		// 瓴控电机速度闭环测试,单位：度/秒（未减速前）
 		LKSetSpeed(LK_Motor1_ID, 90000);
+		osDelay(10);
 		
   }
 }

@@ -72,7 +72,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	}
 	else{
 		// TODO: 瓴控电机消息处理
-		
+		LKSaveMotoMsg(hcan,CAN_RX_FIFO0);
 	} 
 }
 
