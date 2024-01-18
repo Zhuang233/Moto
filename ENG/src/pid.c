@@ -18,6 +18,7 @@ void pidInit (PidTD* pid,
 	pidTimeInit(&pid->time);
 	pid->first_cal	= true;
 	pid->error			= 0;
+	pid->lastError  = 0;
 	pid->prevError	= 0;
 	pid->integ			= 0;
 	pid->deriv			= 0;
@@ -52,8 +53,12 @@ void pid_calculate(PidTD* pid,float desired,float measured)
   pid->error = pid->desired - measured;
   
 	pid->integ += pid->error * pid->time.dt;
-	pid->deriv = (pid->error - pid->prevError) / pid->time.dt;
-
+	if(pid->time.dt != 0){
+		pid->deriv = (pid->error - pid->lastError) / pid->time.dt;
+	}
+	else{
+		pid->deriv = 0;
+	}
 	pid->outP = pid->kp * pid->error;
 	pid->outI = pid->ki * pid->integ;
 	pid->outD = pid->kd * pid->deriv;
@@ -61,7 +66,37 @@ void pid_calculate(PidTD* pid,float desired,float measured)
 	pid->outPID = pid->outP + pid->outI + pid->outD;
 	float_constraint(&pid->outPID,pid->outLimit,pid->outLimitLow);
   
-	pid->prevError = pid->error;
+	pid->lastError = pid->error;
+}
+
+void pid_calculate_inc(PidTD* pid,float desired,float measured){
+	float increase_p = 0;
+	float increase_i = 0;
+	float increase_d = 0;
+	
+	GetDt(&pid->time, SECOND);
+  if(pid->first_cal == true)
+  {
+    pid->first_cal = false;
+    pid->time.dt = 0.01;
+  }
+  pid->desired = desired;
+  pid->error = pid->desired - measured;
+	
+	increase_p = pid->kp * (pid->error - pid->lastError);
+	increase_i = pid->ki * pid->error;
+	increase_d = pid->kd * (pid->error - 2*pid->lastError + pid->prevError);
+	
+	pid->outP += increase_p;
+	pid->outI += increase_i;
+	pid->outD += increase_d;
+	
+	float_constraint(&pid->outI,pid->iLimit,pid->iLimitLow);
+	pid->outPID = pid->outP + pid->outI + pid->outD;
+	float_constraint(&pid->outPID,pid->outLimit,pid->outLimitLow);
+	
+	pid->prevError = pid->lastError;
+	pid->lastError = pid->error;
 }
 
 
@@ -76,8 +111,9 @@ void GetDt(TimeTD *time, uint32_t time_unit)
 {
 	uint32_t d_cnt = 0;
 	
-	time->timer_cnt_now = __HAL_TIM_GET_COUNTER(&PID_TIMER_HANDEL);
-	if(time->timer_cnt_now > time->timer_cnt_last)
+	//time->timer_cnt_now = __HAL_TIM_GET_COUNTER(&PID_TIMER_HANDEL);
+	time->timer_cnt_now = TIM2->CNT;
+	if(time->timer_cnt_now >= time->timer_cnt_last)
 	{
 		d_cnt = time->timer_cnt_now - time->timer_cnt_last;
 	}

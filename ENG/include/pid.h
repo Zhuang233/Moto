@@ -25,7 +25,8 @@ typedef struct Pid_Object
 	float desired;      //< set point
   
 	float error;        //< error
-	float prevError;    //< previous error
+	float lastError;		//上次
+	float prevError;    //上上次
   
 	float integ;        //< integral
 	float deriv;        //< derivative
@@ -60,6 +61,7 @@ void pidInit (PidTD* pid,
 							const float kd);
 							
 void pid_calculate(PidTD* pid,float desired,float measured);
+void pid_calculate_inc(PidTD* pid,float desired,float measured);
 void pidClearIntegral(PidTD *pid);
 
 #endif
