@@ -11,6 +11,7 @@
 #include "LKMotoDriver.h"
 #include "pid.h"
 #include "trace.h"
+#include "test.h"
 
 int zbwtest = 0;
 
@@ -20,6 +21,7 @@ void TestTask(void const * argument)
 {
 	PidTD pidtest;
 	pidInit(&pidtest, 2000, 5000, 2.5, 0.00001, 0);
+	test_pid_pos_init();
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -27,18 +29,23 @@ void TestTask(void const * argument)
 
 		// 测试电机电流直接控制
 		SetMotoCurrent(&hcan1, Ahead, 300, 900, 2700, 8100);
-		
 		// 速度环测试
 		pid_calculate(&pidtest, 500, MotoState[0].speed_actual);
 		trace_pid(&pidtest);
 		SetMotoCurrent(&hcan1, Ahead, pidtest.outPID, 0, 0, 0);
-		osDelay(1);
-		
-		-----------------------------------------------------*/
+		osDelay(1);	
 
+		
 		// 瓴控电机速度闭环测试,单位：度/秒（未减速前）
 		LKSetSpeed(LK_Motor1_ID, 90000);
-		osDelay(10);
+		osDelay(10);	
+		
+		// 位置环测试
+		test_pid_pos();
+		osDelay(1);
+		-----------------------------------------------------*/
+
+
 		
   }
 }

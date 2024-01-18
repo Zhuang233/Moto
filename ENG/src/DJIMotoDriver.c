@@ -8,6 +8,25 @@ void SaveMotoCurrent(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
 uint8_t rx_data[8]; //FIFO接收缓存区
 MotoStateTD MotoState[16];
 
+void MotoStateInit(MotoStateTD* motostate)
+{
+	motostate->angle = 0;
+	motostate->angle_actual = 0;
+	motostate->angle_desired = 0;
+	motostate->angle_last = 0;
+	motostate->first_run = true;
+	motostate->given_current = 0;
+	motostate->original_position = 0;
+	motostate->real_current = 0;
+	motostate->speed_actual = 0;
+	motostate->speed_desired = 0;
+	motostate->speed_last = 0;
+	motostate->temperature = 0;
+	motostate->turns = 0;
+}
+
+
+
 // 发送电机电流值
 // 参数：can句柄，电机组别，电机1 2 3 4电流
 void SetMotoCurrent(CAN_HandleTypeDef* hcan, MotoGroupe group, int16_t C1, int16_t C2, int16_t C3, int16_t C4)

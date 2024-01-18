@@ -1,6 +1,6 @@
 #include "LKMotoDriver.h"
 
-uint8_t rx_data[8]; //FIFO接收缓存区
+uint8_t rx_data_lk[8]; //FIFO接收缓存区
 LKMotoStateTD LKMotoState[8];
 
 
@@ -34,7 +34,7 @@ void LKSetSpeed(LKMotorIdTD moto_id, uint32_t speed){
 void LKSaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 	CAN_RxHeaderTypeDef Rx_Msg;
 
-  HAL_CAN_GetRxMessage(hcan, RxFifo, &Rx_Msg, rx_data);					// 接收can1 fifo0邮箱的数据帧。不接收会导致fifo邮箱一直爆满，无限进入接收中断，卡死所有任务。
+  HAL_CAN_GetRxMessage(hcan, RxFifo, &Rx_Msg, rx_data_lk);					// 接收can1 fifo0邮箱的数据帧。不接收会导致fifo邮箱一直爆满，无限进入接收中断，卡死所有任务。
 
   switch (Rx_Msg.StdId)			//can1 motor message decode
   {

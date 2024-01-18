@@ -37,20 +37,20 @@ typedef struct
 	int16_t 	given_current;
 	int32_t  	angle_desired;
 	uint16_t 	angle_actual;
-	uint16_t	angle_vague;
+//	uint16_t	angle_vague;
 	uint16_t 	angle_last;
-	int32_t		angle;
-	int16_t 	turns;
+	int32_t		angle;							//总角度
+	int16_t 	turns;							//转过的圈数
 	int8_t		temperature;
 	int16_t		original_position;
   bool      first_run;
-	bool 		whe_use_pid;
+//	bool 		whe_use_pid;
 //	TIME 		time;
 }MotoStateTD;
 
 extern MotoStateTD MotoState[16];
 
+void MotoStateInit(MotoStateTD* motostate);
 void SetMotoCurrent(CAN_HandleTypeDef* hcan, MotoGroupe group, int16_t C1, int16_t C2, int16_t C3, int16_t C4);
 void SaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
-void CAN1_Set_AheadCur(int16_t C1, int16_t C2, int16_t C3, int16_t C4);
 #endif
