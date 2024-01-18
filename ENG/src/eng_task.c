@@ -20,7 +20,7 @@ PidTD pidtest;
 void TestTask(void const * argument)
 {
 	
-	pidInit(&pidtest, 10000, 1000, 0, 0.1, 0);
+	pidInit(&pidtest, 10000, 10000, 0, 0.1, 0);
 	test_pid_pos_init();
   for(;;)
   {	
@@ -30,6 +30,11 @@ void TestTask(void const * argument)
 		// 测试电机电流直接控制
 		SetMotoCurrent(&hcan1, Ahead, 300, 900, 2700, 8100);
 
+		// 速度环测试
+		pid_calculate_inc(&pidtest, 0, MotoState[0].speed_actual);
+		trace_pid(&pidtest);
+		SetMotoCurrent(&hcan1, Ahead, pidtest.outPID, 0, 0, 0);
+		osDelay(1);	
 
 		
 		// 瓴控电机速度闭环测试,单位：度/秒（未减速前）
@@ -41,11 +46,7 @@ void TestTask(void const * argument)
 		osDelay(1);
 		-----------------------------------------------------*/
 
-		// 速度环测试
-		pid_calculate_inc(&pidtest, 0, MotoState[0].speed_actual);
-		trace_pid(&pidtest);
-		SetMotoCurrent(&hcan1, Ahead, pidtest.outPID, 0, 0, 0);
-		osDelay(1);	
+
 		
   }
 }
@@ -56,7 +57,7 @@ void Mototask(void const * argument)
 {
   for(;;)
   {
-    osDelay(1);
+    osDelay(1); 
   }
 }
 
