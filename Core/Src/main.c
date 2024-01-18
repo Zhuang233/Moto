@@ -95,7 +95,7 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 	can_filter_init();
-	
+	__HAL_TIM_ENABLE(&htim2);
 	trace_init();
 
   /* USER CODE END 2 */
