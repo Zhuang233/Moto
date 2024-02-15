@@ -45,7 +45,8 @@ void TestTask(void const * argument)
 		test_pid_pos();
 		osDelay(1);
 		-----------------------------------------------------*/
-
+		// 遥控控制电机测试
+		test_rc_moto();
 
 		
   }

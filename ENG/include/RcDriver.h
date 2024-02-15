@@ -40,6 +40,9 @@ typedef __packed struct
 	rc_info_key key;
 } RC_Ctl_t;
 
+extern RC_Ctl_t RC_CtrlData;
+
 void Rc_IRQ();
 void usart_dma_init(void);
+
 #endif

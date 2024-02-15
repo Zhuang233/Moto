@@ -1,6 +1,8 @@
 #include "test.h"
+#include "cmsis_os.h"
 #include "pid.h"
 #include "DJIMotoDriver.h"
+#include "RcDriver.h"
 
 #define TEST_PID_POS_P 1
 #define TEST_PID_POS_I 0
@@ -30,4 +32,11 @@ void test_pid_pos(){
 		pid_calculate(&pid_test_spd, p_moto_state_test->speed_desired , p_moto_state_test->speed_actual);
 		current_test = (int)pid_test_spd.outPID;
 		SetMotoCurrent(&hcan1, Ahead, current_test, 0, 0 ,0);
+}
+
+void test_rc_moto(){
+	MotoState[0].angle_desired += RC_CtrlData.rc.ch2;
+	if(MotoState[0].angle_desired > 1950000) MotoState[0].angle_desired = 1950000;
+	if(MotoState[0].angle_desired < 0) MotoState[0].angle_desired = 0;
+	osDelay(1);
 }
