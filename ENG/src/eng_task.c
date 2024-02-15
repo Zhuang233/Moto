@@ -13,6 +13,7 @@
 #include "trace.h"
 #include "test.h"
 
+
 int zbwtest = 0;
 
 PidTD pidtest;
@@ -44,11 +45,14 @@ void TestTask(void const * argument)
 		// 位置环测试
 		test_pid_pos();
 		osDelay(1);
-		-----------------------------------------------------*/
+		
 		// 遥控控制电机测试
 		test_rc_moto();
-
+		-----------------------------------------------------*/
 		
+		// 微动开关测试
+		test_wd();
+
   }
 }
 

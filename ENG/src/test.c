@@ -3,6 +3,7 @@
 #include "pid.h"
 #include "DJIMotoDriver.h"
 #include "RcDriver.h"
+#include "wd.h"
 
 #define TEST_PID_POS_P 1
 #define TEST_PID_POS_I 0
@@ -38,5 +39,18 @@ void test_rc_moto(){
 	MotoState[0].angle_desired += RC_CtrlData.rc.ch2;
 	if(MotoState[0].angle_desired > 1950000) MotoState[0].angle_desired = 1950000;
 	if(MotoState[0].angle_desired < 0) MotoState[0].angle_desired = 0;
+	osDelay(1);
+}
+
+
+// 微动开关测试(短接io和5v c板绿灯亮)
+void test_wd(){
+
+	if(hy_reset == true){
+		HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+	}
+	else{
+		HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+	}
 	osDelay(1);
 }

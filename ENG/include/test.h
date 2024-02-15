@@ -3,4 +3,5 @@
 void test_pid_pos();
 void test_pid_pos_init();
 void test_rc_moto();
+void test_wd();
 #endif
