@@ -4,4 +4,6 @@
 
 
 extern bool hy_reset;
+extern bool qsn_reset;
+extern bool qsw_reset;
 #endif

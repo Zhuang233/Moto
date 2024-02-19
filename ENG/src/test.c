@@ -52,7 +52,7 @@ void test_rc_moto(){
 }
 
 
-// 微动开关测试(短接io和5v c板绿灯亮)
+// 微动开关测试(短接io和5v c板RGB灯亮)
 void test_wd(){
 
 	if(hy_reset == true){
@@ -60,6 +60,20 @@ void test_wd(){
 	}
 	else{
 		HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+	}
+	
+	if(qsn_reset == true){
+		HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_SET);
+	}
+	else{
+		HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin, GPIO_PIN_RESET);
+	}
+	
+	if(qsw_reset == true){
+		HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
+	}
+	else{
+		HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_RESET);
 	}
 	osDelay(1);
 }
