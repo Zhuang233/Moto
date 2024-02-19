@@ -18,6 +18,10 @@ PidTD pid_test_pos;
 MotoStateTD* p_moto_state_test = &MotoState[0];
 int current_test;
 bool hy_uninit = true;
+float qs_reset_speed = 2500;
+bool qs_uninit = true;
+uint8_t qs_reset_stage = 0;
+int32_t qs_angle_max;
 
 // 0号电机速度环测试
 void test_pid_spd(){
@@ -108,4 +112,53 @@ void test_reset_hy(){
 		test_pid_pos();
 	}
 	
+}
+
+// 前伸位置初始化测试
+void test_reset_qs(){
+	if(qs_uninit == true){
+		if(qs_reset_stage == 0){
+			if(qsn_reset == false){
+				// 速度环
+				pid_calculate_inc(&pidtest, qs_reset_speed, MotoState[0].speed_actual);
+				trace_pid(&pidtest);
+				SetMotoCurrent(&hcan1, Ahead, pidtest.outPID, 0, 0, 0);
+				osDelay(1);
+			}
+			else{
+				SetMotoCurrent(&hcan1, Ahead, 0, 0, 0, 0);
+				osDelay(20);
+				if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_11) == GPIO_PIN_SET){
+					qs_reset_speed = -2500;
+					pidInit(&pid_test_pos, 2000, 3000, TEST_PID_POS_P, TEST_PID_POS_I, TEST_PID_POS_D);
+					pidInit(&pid_test_spd, 2000, 10000, TEST_PID_SPD_P, TEST_PID_SPD_I, TEST_PID_SPD_D);
+					MotoStateInit(p_moto_state_test);
+					current_test = 0;
+					qs_reset_stage = 1;
+				}
+			}
+		}
+		else if(qs_reset_stage == 1){
+			if(qsw_reset == false){
+				// 速度环
+				pid_calculate_inc(&pidtest, qs_reset_speed, MotoState[0].speed_actual);
+				trace_pid(&pidtest);
+				SetMotoCurrent(&hcan1, Ahead, pidtest.outPID, 0, 0, 0);
+				osDelay(1);
+			}
+			else{
+				SetMotoCurrent(&hcan1, Ahead, 0, 0, 0, 0);
+				osDelay(20);
+				if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_13) == GPIO_PIN_SET){
+					qs_reset_stage = 2;
+					qs_angle_max = p_moto_state_test->angle;
+					qs_uninit = false;
+				}
+			}
+		}
+	}
+	else{
+		p_moto_state_test->angle_desired = 0;
+		test_pid_pos();
+	}
 }

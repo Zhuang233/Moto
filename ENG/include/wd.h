@@ -2,6 +2,7 @@
 #define __WD_H
 #include "stdbool.h"
 
+void wd_init();
 
 extern bool hy_reset;
 extern bool qsn_reset;

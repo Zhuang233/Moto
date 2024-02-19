@@ -30,6 +30,7 @@
 #include "can_zbw.h"
 #include "trace.h"
 #include "RcDriver.h"
+#include "wd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -103,6 +104,7 @@ int main(void)
 	__HAL_TIM_ENABLE(&htim2);
 	trace_init();
 	usart_dma_init();
+	wd_init();
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */

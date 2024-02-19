@@ -10,4 +10,5 @@ void test_pid_pos_init();
 void test_rc_moto();
 void test_wd();
 void test_reset_hy();
+void test_reset_qs();
 #endif
