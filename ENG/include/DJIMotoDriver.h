@@ -48,9 +48,14 @@ typedef struct
 //	TIME 		time;
 }MotoStateTD;
 
-extern MotoStateTD MotoState[16];
+extern MotoStateTD MotoState[16];// 电机状态结构体
 
+// 电机结构体初始化
 void MotoStateInit(MotoStateTD* motostate);
+
+// 电机电流赋值
 void SetMotoCurrent(CAN_HandleTypeDef* hcan, MotoGroupe group, int16_t C1, int16_t C2, int16_t C3, int16_t C4);
+
+// can接收回调函数用
 void SaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
 #endif
