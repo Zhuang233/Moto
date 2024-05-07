@@ -4,11 +4,11 @@
 
 extern PidTD pidtest;
 
-void test_pid_spd();
-void test_pid_pos();
-void test_pid_pos_init();
-void test_rc_moto();
-void test_wd();
-void test_reset_hy();
-void test_reset_qs();
+void test_pid_spd(void);
+void test_pid_pos(void);
+void test_pid_pos_init(void);
+void test_rc_moto(void);
+void test_wd(void);
+void test_reset_hy(void);
+void test_reset_qs(void);
 #endif

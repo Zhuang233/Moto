@@ -42,7 +42,7 @@ typedef __packed struct
 
 extern RC_Ctl_t RC_CtrlData;
 
-void Rc_IRQ();
+void Rc_IRQ(void);
 void usart_dma_init(void);
 
 #endif
