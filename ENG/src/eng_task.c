@@ -1,4 +1,5 @@
 #include "eng_task.h"
+#include "main.h"
 
 
 //#include "FreeRTOS.h"
@@ -13,9 +14,13 @@
 #include "trace.h"
 #include "test.h"
 #include "chassis.h"
+#include "RoboArm.h"
 
 
-int zbwtest = 0;
+int16_t zbwtest = 30000;
+float zbwtest_spd_pid[3][3]; //p0.3
+float zbwtest_pos_pid[3][3]; //p0.8
+
 
 union RV_TypeConvert
 {
@@ -24,6 +29,9 @@ union RV_TypeConvert
 	unsigned int to_uint;
 	uint8_t buf[4];
 }rv_type_convert;
+
+extern PidTD pid_lk_moto_spd[3];
+extern PidTD pid_lk_moto_pos[3];
 
 // 底盘任务
 //1.控制数据接收与处理
@@ -74,9 +82,11 @@ void ChassisTask_test(void)
 void TestTask(void const * argument)
 {
 	
+	
 	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
 	test_pid_pos_init();
 	chassis_pid_init();
+	RoboArm_Pid_Init();
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -84,9 +94,7 @@ void TestTask(void const * argument)
 		// 测试电机电流直接控制
 		SetMotoCurrent(&hcan1, Ahead, 300, 900, 2700, 8100);
 		
-		// 瓴控电机速度闭环测试,单位：度/秒（未减速前）
-		LKSetSpeed(LK_Motor1_ID, 90000);
-		osDelay(10);	
+
 		
 		// 位置环测试
 		test_pid_pos();
@@ -105,12 +113,26 @@ void TestTask(void const * argument)
 		// EC电机测试
 		EC_set_motor_position(6, 30.0, 300, 50, 3);
 		
-		-----------------------------------------------------*/
 		// 底盘控制测试
-		ChassisTask_test();
+		ChassisTask_test();		
 		
-	
-	osDelay(1);
+		// 瓴控电机速度闭环测试,单位：度/秒（未减速前）
+		LKSetSpeed(LK_Motor1_ID, 90000);
+		osDelay(10);	
+		// 调试pid参数用
+		LKMotoState[0].angle_desired = zbwtest;
+		for(int i=0;i<3;i++){
+			pidParameterSet(&pid_lk_moto_spd[i],zbwtest_spd_pid[i][0],zbwtest_spd_pid[i][1],zbwtest_spd_pid[i][2]);
+			pidParameterSet(&pid_lk_moto_pos[i],zbwtest_pos_pid[i][0],zbwtest_pos_pid[i][1],zbwtest_pos_pid[i][2]);
+		}
+		Update_RoboArm_Pos();
+		osDelay(1);
+		-----------------------------------------------------*/
+		LKMotoState[0].angle_desired = zbwtest;
+
+		
+		Update_RoboArm_Pos();
+		osDelay(1);
 
   }
 }

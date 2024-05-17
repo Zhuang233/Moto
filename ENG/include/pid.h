@@ -63,5 +63,6 @@ void pidInit (PidTD* pid,
 void pid_calculate(PidTD* pid,float desired,float measured);
 void pid_calculate_inc(PidTD* pid,float desired,float measured);
 void pidClearIntegral(PidTD *pid);
+void pidParameterSet(PidTD* pid,float kp,float ki,float kd);
 
 #endif

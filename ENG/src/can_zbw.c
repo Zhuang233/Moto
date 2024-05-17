@@ -67,13 +67,16 @@ void can_filter_init(void)
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-	if(hcan == &hcan1){
-		SaveMotoMsg(hcan,CAN_RX_FIFO0);
-	}
-	else{
-		// TODO: 瓴控电机消息处理
-		LKSaveMotoMsg(hcan,CAN_RX_FIFO0);
-	} 
+//	if(hcan == &hcan1){
+//		SaveMotoMsg(hcan,CAN_RX_FIFO0);
+//	}
+//	else{
+//		// TODO: 瓴控电机消息处理
+//		LKSaveMotoMsg(hcan,CAN_RX_FIFO0);
+//	} 
+	
+	// 机械臂末端3轴现在使用单独c板控制，	can1直接给瓴控3个电机使用
+	LKSaveMotoMsg(hcan,CAN_RX_FIFO0);
 }
 
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
