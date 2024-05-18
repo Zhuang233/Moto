@@ -30,6 +30,7 @@
 #include "can_zbw.h"
 #include "trace.h"
 #include "RcDriver.h"
+#include "uart_zbw.h"
 #include "wd.h"
 /* USER CODE END Includes */
 
@@ -99,11 +100,13 @@ int main(void)
   MX_CAN2_Init();
   MX_TIM2_Init();
   MX_USART3_UART_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 	can_filter_init();
 	__HAL_TIM_ENABLE(&htim2);
 	trace_init();
 	usart_dma_init();
+	usart_init();
 	wd_init();
   /* USER CODE END 2 */
 
