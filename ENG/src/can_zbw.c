@@ -36,9 +36,9 @@ void can_filter_init(void)
   CAN_FilterInitStructure_can1_fifo1.FilterMaskIdHigh = 0x0000;
   CAN_FilterInitStructure_can1_fifo1.FilterMaskIdLow = 0x0000;
   CAN_FilterInitStructure_can1_fifo1.FilterBank = 1;											// 过滤器编号
-  CAN_FilterInitStructure_can1_fifo1.FilterFIFOAssignment = CAN_RX_FIFO0; // 过滤器关联到FIFO1
+  CAN_FilterInitStructure_can1_fifo1.FilterFIFOAssignment = CAN_RX_FIFO1; // 过滤器关联到FIFO1
 	
-  HAL_CAN_ConfigFilter(&hcan2, &CAN_FilterInitStructure_can1_fifo1);
+  HAL_CAN_ConfigFilter(&hcan1, &CAN_FilterInitStructure_can1_fifo1);
 	
 	
 	CAN_FilterInitStructure_can2_fifo0.FilterActivation = ENABLE;						// 使能过滤器
@@ -67,19 +67,10 @@ void can_filter_init(void)
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-//	if(hcan == &hcan1){
-//		SaveMotoMsg(hcan,CAN_RX_FIFO0);
-//	}
-//	else{
-//		// TODO: 瓴控电机消息处理
-//		LKSaveMotoMsg(hcan,CAN_RX_FIFO0);
-//	} 
-	
-	// 机械臂末端3轴现在使用单独c板控制，	can1直接给瓴控3个电机使用
-	LKSaveMotoMsg(hcan,CAN_RX_FIFO0);
+	SaveMotoMsg(hcan,CAN_RX_FIFO0);
 }
 
 void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-  SaveMotoMsg(hcan,CAN_RX_FIFO0);
+	LKSaveMotoMsg(hcan,CAN_RX_FIFO1);
 }
