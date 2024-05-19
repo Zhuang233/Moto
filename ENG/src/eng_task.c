@@ -1,6 +1,6 @@
 #include "eng_task.h"
 #include "main.h"
-
+#include "usart.h"
 
 //#include "FreeRTOS.h"
 //#include "task.h"
@@ -15,6 +15,7 @@
 #include "test.h"
 #include "chassis.h"
 #include "RoboArm.h"
+#include "uart_zbw.h"
 
 
 int16_t zbwtest = 30000;
@@ -105,8 +106,7 @@ void TestTask(void const * argument)
 		// 微动开关测试
 		test_wd();
 		
-		// 横移复位测试
-		test_reset_hy();
+
 		
 		test_reset_qs();
 		
@@ -128,11 +128,15 @@ void TestTask(void const * argument)
 		Update_RoboArm_Pos();
 		osDelay(1);
 		-----------------------------------------------------*/
-		LKMotoState[0].angle_desired = zbwtest;
+//		LKMotoState[0].angle_desired = zbwtest;
 
 		
-		Update_RoboArm_Pos();
-		osDelay(1);
+//		Update_RoboArm_Pos();
+		// 横移复位测试
+		test_reset_qs();
+		// 微动开关测试
+		test_wd();
+//		osDelay(1);
 
   }
 }
@@ -152,10 +156,18 @@ void LedTask(void const * argument)
 {
   for(;;)
   {
-     HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
-		 osDelay(500);
-		 HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
-		 osDelay(500);
+//     HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+//		 osDelay(500);
+//		 HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+//		 osDelay(500);
+  }
+}
+
+void DataSyncAnCTask(void const * argument){
+  for(;;)
+  {
+		data_sync_uart();
+    osDelay(1); 
   }
 }
 
