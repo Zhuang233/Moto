@@ -133,10 +133,13 @@ void TestTask(void const * argument)
 		
 //		Update_RoboArm_Pos();
 		// 横移复位测试
-		test_reset_qs();
+//		test_reset_qs();
 		// 微动开关测试
-		test_wd();
-//		osDelay(1);
+//		test_wd();
+		osDelay(1);
+RoboArm_RC_Ctrl();
+Update_RoboArm_Pos();
+
 
   }
 }
