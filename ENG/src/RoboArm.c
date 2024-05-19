@@ -1,19 +1,22 @@
 #include "RoboArm.h"
 #include "LKMotoDriver.h"
+#include "DJIMotoDriver.h"
 #include "pid.h"
 #include "arm_math.h"
 #include "RcDriver.h"
 
 
-
-#define ARM_ANGLE_MAX_1 40000
-#define ARM_ANGLE_MIN_1 15000
+//pitch
+#define ARM_ANGLE_MAX_1 45077
+#define ARM_ANGLE_MIN_1 12650
 #define ARM_ANGLE_STD_1 28492
 
-#define ARM_ANGLE_MAX_2 40000
-#define ARM_ANGLE_MIN_2 10000
+//roll
+#define ARM_ANGLE_MAX_2 42583
+#define ARM_ANGLE_MIN_2 9858
 #define ARM_ANGLE_STD_2 25823
 
+//yall
 #define ARM_ANGLE_MAX_3 40000
 #define ARM_ANGLE_MIN_3 10000
 #define ARM_ANGLE_STD_3 24370
@@ -62,6 +65,7 @@ typedef float32_t *DH_Matrix;
 PidTD pid_lk_moto_spd[3];
 PidTD pid_lk_moto_pos[3];
 int16_t current_set[3];
+int16_t dji_current_set[2];
 
 float32_t
 	EndToE_theta=0, EndToE_d=0, EndToE_a=0 ,EndToE_alpha=0,
@@ -84,8 +88,12 @@ void RoboArm_Pid_Init(){
 }
 
 
+
+extern PidTD pid_moto_pos[2];
+extern PidTD pid_moto_spd[2];
 // 设置机械臂末端个电机角度（使用电流模式+双环pid实现）
 void Update_RoboArm_Pos(){
+	// 前三轴
 	for(int i=0;i<3;i++){
 		pid_calculate(&pid_lk_moto_pos[i], (float)LKMotoState[i].angle_desired , (float)LKMotoState[i].encoder);
 		LKMotoState[i].speed_desired = (int)pid_lk_moto_pos[i].outPID;
@@ -93,22 +101,40 @@ void Update_RoboArm_Pos(){
 		current_set[i] = (int)pid_lk_moto_spd[i].outPID;
 	}
 	
-	LKSetMotoCurrent(&hcan1,current_set[0],current_set[1],current_set[2],0);
+//	LKSetMotoCurrent(&hcan1,current_set[0],current_set[1],current_set[2],0); //广播模式roll会歪
+	// 单电机发送
+	LKSetMotoCurrent_single(LK_Motor1_ID,current_set[0]);
+	LKSetMotoCurrent_single(LK_Motor2_ID,current_set[1]);
+	LKSetMotoCurrent_single(LK_Motor3_ID,current_set[2]);
+	
+	// 前伸、横移
+	for(int i=0;i<2;i++){
+		pid_calculate(&pid_moto_pos[i], (float)MotoState[i].angle_desired , (float)MotoState[i].angle);
+		MotoState[i].speed_desired = (int)pid_moto_pos[i].outPID;
+		pid_calculate(&pid_moto_spd[i], (float)MotoState[i].speed_desired , (float)MotoState[i].speed_actual);
+		dji_current_set[i] = (int)pid_moto_spd[i].outPID;
+	}
+	SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],0,0);
 }
 
-// 遥控控制前三轴
+// 遥控控制前四轴
 void RoboArm_RC_Ctrl(){
 	LKMotoState[0].angle_desired += RC_CtrlData.rc.ch2 / 10;
 	if(LKMotoState[0].angle_desired > ARM_ANGLE_MAX_1) LKMotoState[0].angle_desired = ARM_ANGLE_MAX_1;
 	if(LKMotoState[0].angle_desired < ARM_ANGLE_MIN_1) LKMotoState[0].angle_desired = ARM_ANGLE_MIN_1;
 	
-	LKMotoState[1].angle_desired += RC_CtrlData.rc.ch1 / 10;
+	LKMotoState[1].angle_desired -= RC_CtrlData.rc.ch1 / 10;
 	if(LKMotoState[1].angle_desired > ARM_ANGLE_MAX_2) LKMotoState[1].angle_desired = ARM_ANGLE_MAX_2;
 	if(LKMotoState[1].angle_desired < ARM_ANGLE_MIN_2) LKMotoState[1].angle_desired = ARM_ANGLE_MIN_2;
 	
-	LKMotoState[2].angle_desired += RC_CtrlData.rc.ch3 / 10;
+	LKMotoState[2].angle_desired -= RC_CtrlData.rc.ch3 / 10;
 	if(LKMotoState[2].angle_desired > ARM_ANGLE_MAX_3) LKMotoState[2].angle_desired = ARM_ANGLE_MAX_3;
 	if(LKMotoState[2].angle_desired < ARM_ANGLE_MIN_3) LKMotoState[2].angle_desired = ARM_ANGLE_MIN_3;
+	
+	MotoState[1].angle_desired += RC_CtrlData.rc.ch4/1.5;
+	if(MotoState[1].angle_desired > 780000) MotoState[1].angle_desired = 780000;
+	if(MotoState[1].angle_desired < 10000) MotoState[1].angle_desired = 10000;
+	
 }
 
 

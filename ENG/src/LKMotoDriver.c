@@ -43,6 +43,32 @@ void LKSetSpeed(LKMotorIdTD moto_id, uint32_t speed){
 }
 
 
+
+void LKSetMotoCurrent_single(LKMotorIdTD moto_id, int16_t current){
+	CAN_TxHeaderTypeDef canTxHeader;
+	uint32_t send_mail_box;
+	uint8_t TX_Data[8];
+
+	canTxHeader.StdId = moto_id;
+	canTxHeader.ExtId = 0x00;
+	canTxHeader.RTR = CAN_RTR_DATA;
+	canTxHeader.IDE = CAN_ID_STD;
+	canTxHeader.DLC = 8;
+	
+	TX_Data[0] = 0xA1;
+	TX_Data[1] = 0x00;
+	TX_Data[2] = 0x00;
+	TX_Data[3] = 0x00;
+	TX_Data[4] = *(uint8_t*)(&current);
+	TX_Data[5] = *((uint8_t*)(&current)+1);
+	TX_Data[6] = 0x00;
+	TX_Data[7] = 0x00;
+	
+	/* send can command */
+	HAL_CAN_AddTxMessage(&LK_MOTO_CAN_HANDEL, &canTxHeader, TX_Data, &send_mail_box);
+}
+
+
 void LKSaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo){
 	CAN_RxHeaderTypeDef Rx_Msg;
 

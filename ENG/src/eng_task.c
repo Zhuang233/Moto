@@ -16,6 +16,7 @@
 #include "chassis.h"
 #include "RoboArm.h"
 #include "uart_zbw.h"
+#include "JointReset.h"
 
 
 int16_t zbwtest = 30000;
@@ -84,10 +85,11 @@ void TestTask(void const * argument)
 {
 	
 	
-	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
-	test_pid_pos_init();
-	chassis_pid_init();
+//	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
+//	test_pid_pos_init();
+//	chassis_pid_init();
 	RoboArm_Pid_Init();
+	reset_qs();
   for(;;)
   {	
 		/*---------------------------------------------------

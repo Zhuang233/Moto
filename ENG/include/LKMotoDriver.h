@@ -41,6 +41,7 @@ extern LKMotoStateTD LKMotoState[8];
 
 void LKSetSpeed(LKMotorIdTD moto_id, uint32_t speed);
 void LKSaveMotoMsg(CAN_HandleTypeDef *hcan, uint32_t RxFifo);
+void LKSetMotoCurrent_single(LKMotorIdTD moto_id, int16_t current);
 
 //以下为广播模式
 void LKSetMotoCurrent(CAN_HandleTypeDef* hcan, int16_t C1, int16_t C2, int16_t C3, int16_t C4);
