@@ -1,9 +1,5 @@
 #include "pid.h"
 
-#define SECOND				0		//秒
-#define MILLISECOND		1		//毫秒
-#define MICROSECOND		2		//微秒
-
 void GetDt(TimeTD *time, uint32_t time_unit);
 void float_constraint(float *data,float max,float min);
 void pidTimeInit(TimeTD *time);
