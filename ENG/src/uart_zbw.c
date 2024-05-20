@@ -1,16 +1,23 @@
 #include "uart_zbw.h"
 #include "usart.h"
 #include <stdbool.h>
+// 同步数据
+/*
+瓴控前三轴位置uint16_t
+横移位置int32_t 
+前伸位置int32_t 
+*/
+
+
 // AC板通信协议
 /*
 帧头 0x55
 中间8字节数据
-帧尾 0x56
+帧尾 0xaa
 */
 
 
-int16_t success_count=0;
-int16_t fail_count=0;
+
 
 typedef struct {
     uint8_t buffer[FRAME_SIZE];
@@ -19,11 +26,14 @@ typedef struct {
     volatile uint32_t count;
 } RingBuffer;
 
+
 RingBuffer uart_ring_buffer;
 uint8_t data_rev_byte = 0;
-
 uint8_t sync_data_to_a[SYNC_TO_A_SIZE] = {0};
-uint8_t sync_data_from_a[SYNC_FROM_A_SIZE] = {0};
+DataUnion sync_data_from_a;
+
+
+
 
 void RingBuffer_Init(RingBuffer *rb) {
     rb->head = 0;
@@ -64,18 +74,16 @@ bool RingBuffer_Get(RingBuffer *rb, uint8_t *data) {
 void decode_uart_rev_data(){
 	uint8_t test_byte = 0;
 	RingBuffer_Put(&uart_ring_buffer,data_rev_byte);
-	if(data_rev_byte == FRAME_TAIL){
+	if(data_rev_byte == FRAME_TAIL && uart_ring_buffer.count == FRAME_SIZE-1){
 		RingBuffer_Get(&uart_ring_buffer,&test_byte);
 		if(test_byte == FRAME_HEAD){
 			for(int i=0; i<FRAME_SIZE-2;i++){
-				RingBuffer_Get(&uart_ring_buffer,(sync_data_from_a+i));
+				RingBuffer_Get(&uart_ring_buffer,(sync_data_from_a.bytes+i));
 			}
 			RingBuffer_Get(&uart_ring_buffer,&test_byte);
-			success_count++;
 		}
 		else{
 			RingBuffer_Init(&uart_ring_buffer);
-			fail_count++;
 		}
 		
 	}
