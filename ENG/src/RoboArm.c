@@ -6,6 +6,7 @@
 #include "RcDriver.h"
 #include "cmsis_os.h"
 #include "JointReset.h"
+#include "uart_zbw.h"
 
 
 //pitch
@@ -115,13 +116,6 @@ void Update_RoboArm_Pos(){
 	osDelay(1);
 	LKSetMotoCurrent_single(LK_Motor3_ID,current_set[2]);
 	osDelay(1);
-//	
-//  LKSetMotoCurrent_single(LK_Motor1_ID,0);
-//	osDelay(10);
-//	LKSetMotoCurrent_single(LK_Motor2_ID,0);
-//	osDelay(10);
-//	LKSetMotoCurrent_single(LK_Motor3_ID,0);
-//	osDelay(10);
 	
 	if(qs_inited == true){
 		// 前伸
@@ -161,6 +155,30 @@ void RoboArm_RC_Ctrl(){
 	if(MotoState[1].angle_desired > 780000) MotoState[1].angle_desired = 780000;
 	if(MotoState[1].angle_desired < 10000) MotoState[1].angle_desired = 10000;
 	
+}
+
+
+// 串口控制前五轴
+void RoboArm_UART_Ctrl(){
+	LKMotoState[0].angle_desired =  sync_data_from_a.data.theta1;
+	if(LKMotoState[0].angle_desired > ARM_ANGLE_MAX_1) LKMotoState[0].angle_desired = ARM_ANGLE_MAX_1;
+	if(LKMotoState[0].angle_desired < ARM_ANGLE_MIN_1) LKMotoState[0].angle_desired = ARM_ANGLE_MIN_1;
+	
+	LKMotoState[1].angle_desired =  sync_data_from_a.data.theta2;
+	if(LKMotoState[1].angle_desired > ARM_ANGLE_MAX_2) LKMotoState[1].angle_desired = ARM_ANGLE_MAX_2;
+	if(LKMotoState[1].angle_desired < ARM_ANGLE_MIN_2) LKMotoState[1].angle_desired = ARM_ANGLE_MIN_2;
+	
+	LKMotoState[2].angle_desired =  sync_data_from_a.data.theta3;
+	if(LKMotoState[2].angle_desired > ARM_ANGLE_MAX_3) LKMotoState[2].angle_desired = ARM_ANGLE_MAX_3;
+	if(LKMotoState[2].angle_desired < ARM_ANGLE_MIN_3) LKMotoState[2].angle_desired = ARM_ANGLE_MIN_3;
+	
+	MotoState[1].angle_desired = sync_data_from_a.data.qs_pos;
+	if(MotoState[1].angle_desired > 780000) MotoState[1].angle_desired = 780000;
+	if(MotoState[1].angle_desired < 10000) MotoState[1].angle_desired = 10000;
+	
+	MotoState[0].angle_desired = sync_data_from_a.data.hy_pos;
+	if(MotoState[0].angle_desired > 0) MotoState[0].angle_desired = 0;
+	if(MotoState[0].angle_desired < -390000) MotoState[0].angle_desired = -390000;
 }
 
 

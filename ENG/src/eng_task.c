@@ -139,7 +139,8 @@ void TestTask(void const * argument)
 //		test_reset_qs();
 		// 微动开关测试
 //		test_wd();
-		RoboArm_RC_Ctrl();
+//		RoboArm_RC_Ctrl();
+		RoboArm_UART_Ctrl();
 		Update_RoboArm_Pos();
 //osDelay(1);
   }
@@ -164,10 +165,10 @@ void LedTask(void const * argument)
 	reset_hy();
   for(;;)
   {
-//     HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
-//		 osDelay(500);
-//		 HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
-//		 osDelay(500);
+     HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
+		 osDelay(500);
+		 HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_SET);
+		 osDelay(500);
   }
 }
 
