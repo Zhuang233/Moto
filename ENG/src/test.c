@@ -17,7 +17,6 @@ PidTD pid_test_spd;
 PidTD pid_test_pos;
 MotoStateTD* p_moto_state_test = &MotoState[1];
 int current_test;
-bool hy_uninit = true;
 
 uint8_t qs_reset_stage = 0;
 int32_t qs_angle_max;
@@ -82,37 +81,6 @@ void test_wd(){
 	osDelay(1);
 }
 
-
-// 横移位置初始化测试
-void test_reset_hy(){
-	float speed = 800;
-	if(hy_uninit == true){
-		if(hy_reset == false){
-			// 速度环
-			pid_calculate_inc(&pidtest, speed, MotoState[0].speed_actual);
-			trace_pid(&pidtest);
-			SetMotoCurrent(&hcan1, Ahead, pidtest.outPID, 0, 0, 0);
-			
-		}
-		else{
-			SetMotoCurrent(&hcan1, Ahead, 0, 0, 0, 0);
-			osDelay(20);
-			if(HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_9) == GPIO_PIN_SET){
-				pidInit(&pid_test_pos, 2000, 3000, TEST_PID_POS_P, TEST_PID_POS_I, TEST_PID_POS_D);
-				pidInit(&pid_test_spd, 2000, 10000, TEST_PID_SPD_P, TEST_PID_SPD_I, TEST_PID_SPD_D);
-				MotoStateInit(p_moto_state_test);
-				current_test = 0;
-				hy_uninit = false;
-			}
-		}
-		osDelay(1);	
-	}
-	else{
-		p_moto_state_test->angle_desired = -180000;
-		test_pid_pos();
-	}
-	
-}
 
 
 

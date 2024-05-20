@@ -88,8 +88,9 @@ void TestTask(void const * argument)
 //	pidInit(&pidtest, 10000, 10000, 20, 0, 0);
 //	test_pid_pos_init();
 //	chassis_pid_init();
+	
+	RoboArm_Pos_Init();
 	RoboArm_Pid_Init();
-	reset_qs();
   for(;;)
   {	
 		/*---------------------------------------------------
@@ -138,18 +139,18 @@ void TestTask(void const * argument)
 //		test_reset_qs();
 		// 微动开关测试
 //		test_wd();
-		osDelay(1);
-RoboArm_RC_Ctrl();
-Update_RoboArm_Pos();
-
-
+		RoboArm_RC_Ctrl();
+		Update_RoboArm_Pos();
+//osDelay(1);
   }
 }
 
 
 // 电机任务函数
-void Mototask(void const * argument)
-{
+void MotoTask(void const * argument)
+{	
+  osDelay(3000); //前伸复位得等3s 2006上电没那么快工作
+	reset_qs();
   for(;;)
   {
     osDelay(1); 
@@ -159,6 +160,8 @@ void Mototask(void const * argument)
 
 void LedTask(void const * argument)
 {
+	osDelay(3000);
+	reset_hy();
   for(;;)
   {
 //     HAL_GPIO_WritePin(LED_G_GPIO_Port, LED_G_Pin, GPIO_PIN_RESET);
@@ -169,6 +172,7 @@ void LedTask(void const * argument)
 }
 
 void DataSyncAnCTask(void const * argument){
+
   for(;;)
   {
 		data_sync_uart();
