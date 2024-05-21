@@ -109,7 +109,7 @@ void duzhuan_TimeInit(TimeTD *time){
 
 
 
-// ∫·“∆Œª÷√≥ı ºªØ≤‚ ‘
+// ∫·“∆Œª÷√≥ı ºªØ
 void reset_hy(){
 	float speed = 800;
 	hy_init();
