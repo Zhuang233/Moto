@@ -9,20 +9,7 @@
 #include "uart_zbw.h"
 
 
-//pitch
-#define ARM_ANGLE_MAX_1 45077
-#define ARM_ANGLE_MIN_1 12650
-#define ARM_ANGLE_STD_1 28492
 
-//roll
-#define ARM_ANGLE_MAX_2 42583
-#define ARM_ANGLE_MIN_2 9858
-#define ARM_ANGLE_STD_2 25823
-
-//yall
-#define ARM_ANGLE_MAX_3 40000
-#define ARM_ANGLE_MIN_3 10000
-#define ARM_ANGLE_STD_3 24370
 /*
 // 矩阵用法
 // 定义矩阵一维数组

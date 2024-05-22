@@ -17,6 +17,7 @@
 #include "RoboArm.h"
 #include "uart_zbw.h"
 #include "JointReset.h"
+#include "RoboArm.h"
 
 
 int16_t zbwtest = 30000;
@@ -91,6 +92,10 @@ void TestTask(void const * argument)
 	
 	RoboArm_Pos_Init();
 	RoboArm_Pid_Init();
+	sync_data_from_a.data.theta1 = ARM_ANGLE_STD_1;
+	sync_data_from_a.data.theta2 = ARM_ANGLE_STD_2;
+	sync_data_from_a.data.theta3 = ARM_ANGLE_STD_3;
+	
   for(;;)
   {	
 		/*---------------------------------------------------
