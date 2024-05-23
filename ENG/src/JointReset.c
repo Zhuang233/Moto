@@ -15,7 +15,7 @@ int16_t dji_moto_current_to_send[2] = {0};
 
 #define QS_POS_OUT_LIMIT 5000
 
-#define QS_POS_P 0.5
+#define QS_POS_P 0.05
 #define QS_POS_I 0
 #define QS_POS_D 0
 #define QS_SPD_P 10
@@ -36,7 +36,7 @@ PidTD* pid_qs_pos = &pid_moto_pos[1];
 
 // ∫·“∆-----------------------------------------
 
-#define HY_POS_P 0.5
+#define HY_POS_P 0.05
 #define HY_POS_I 0
 #define HY_POS_D 0
 #define HY_SPD_P 10
