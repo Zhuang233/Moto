@@ -134,6 +134,7 @@ void BroadcastSpdRev(LKMotoStateTD* state){
 	state->current = rx_data_lk[2] + (rx_data_lk[3] << 8);
 	state->speed = rx_data_lk[4] + (rx_data_lk[5] << 8);
 	state->encoder = rx_data_lk[6] + (rx_data_lk[7] << 8);
+	if(state->encoder > 64000) state->encoder = 0;
 	state->theta = (float)state->encoder * 360 / 65535;
 }
 
