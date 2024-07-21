@@ -160,12 +160,12 @@ void RoboArm_UART_Ctrl(){
 	if(LKMotoState[2].angle_desired < ARM_ANGLE_MIN_3) LKMotoState[2].angle_desired = ARM_ANGLE_MIN_3;
 	
 	MotoState[1].angle_desired = sync_data_from_a.data.qs_pos;
-	if(MotoState[1].angle_desired > 780000) MotoState[1].angle_desired = 780000;
+	if(MotoState[1].angle_desired > ARM_ANGLE_MAX_QS) MotoState[1].angle_desired = ARM_ANGLE_MAX_QS;
 	if(MotoState[1].angle_desired < 10000) MotoState[1].angle_desired = 10000;
 	
 	MotoState[0].angle_desired = sync_data_from_a.data.hy_pos;
-	if(MotoState[0].angle_desired > 0) MotoState[0].angle_desired = 0;
-	if(MotoState[0].angle_desired < -390000) MotoState[0].angle_desired = -390000;
+	if(MotoState[0].angle_desired > -10000) MotoState[0].angle_desired = -10000;
+	if(MotoState[0].angle_desired < -ARM_ANGLE_MAX_HY) MotoState[0].angle_desired = -ARM_ANGLE_MAX_HY;
 }
 
 
