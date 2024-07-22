@@ -80,6 +80,13 @@ void RoboArm_Pos_Init(){
 	LKMotoState[0].angle_desired = ARM_ANGLE_STD_1;
 	LKMotoState[1].angle_desired = ARM_ANGLE_STD_2;
 	LKMotoState[2].angle_desired = ARM_ANGLE_STD_3;
+	MotoState[0].angle_desired = ARM_ANGLE_CENTER_HY;
+	MotoState[1].angle_desired = 0;
+	sync_data_from_a.data.hy_pos = ARM_ANGLE_CENTER_HY;
+	sync_data_from_a.data.qs_pos = 0;
+	sync_data_from_a.data.theta1 = ARM_ANGLE_STD_1;
+	sync_data_from_a.data.theta2 = ARM_ANGLE_STD_2;
+	sync_data_from_a.data.theta3 = ARM_ANGLE_STD_3;
 }
 
 

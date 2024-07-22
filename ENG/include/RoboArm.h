@@ -33,6 +33,7 @@
 
 #define ARM_ANGLE_MAX_QS 389000
 #define ARM_ANGLE_MAX_HY 720000
+#define ARM_ANGLE_CENTER_HY -194951
 
 void Update_RoboArm_Pos(void);
 void RoboArm_Pid_Init(void);
