@@ -181,7 +181,6 @@ void DataSyncAnCTask(void const * argument){
 
   for(;;)
   {
-		data_sync_uart();
     osDelay(1); 
   }
 }
