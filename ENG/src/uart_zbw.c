@@ -2,6 +2,8 @@
 #include "usart.h"
 #include <stdbool.h>
 #include "string.h"
+#include "LKMotoDriver.h"
+#include "DJIMotoDriver.h"
 // 同步数据
 /*
 瓴控前三轴位置uint16_t
@@ -17,6 +19,7 @@
 */
 
 DataUnion sync_data_from_a;
+BackDataUnion sync_data_to_a;
 uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE] = {0};
 
 void decode_ctrl_data(){
@@ -25,6 +28,23 @@ void decode_ctrl_data(){
 	}
 }
 
+void sync_data_to_a_init(){
+	sync_data_to_a.data.hy_pos_read = 0;
+	sync_data_to_a.data.qs_pos_read = 0;
+	sync_data_to_a.data.theta1_read = 0;
+	sync_data_to_a.data.theta2_read = 0;
+	sync_data_to_a.data.theta3_read = 0;
+}
+
+void data_sync_uart(){
+	sync_data_to_a.data.theta1_read = LKMotoState[0].encoder;
+	sync_data_to_a.data.theta2_read = LKMotoState[1].encoder;
+	sync_data_to_a.data.theta3_read = LKMotoState[2].encoder;
+	sync_data_to_a.data.hy_pos_read = MotoState[0].angle;
+	sync_data_to_a.data.qs_pos_read = MotoState[1].angle;
+
+	HAL_UART_Transmit_DMA(&huart1, sync_data_to_a.bytes, SYNC_TO_A_SIZE);
+}
 
 int uart_receive_dma_no_it(UART_HandleTypeDef* huart, uint8_t* pData, uint32_t Size)
 {

@@ -48,10 +48,14 @@ void LedTask(void const * argument)
 }
 
 void DataSyncAnCTask(void const * argument){
-
+	sync_data_to_a_init();
+	osDelay(500);
+	sync_data_to_a.data.head = FRAME_HEAD;
+	sync_data_to_a.data.tail = FRAME_TAIL;
   for(;;)
   {
-    osDelay(1); 
+		data_sync_uart();
+    osDelay(10); 
   }
 }
 
