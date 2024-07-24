@@ -94,41 +94,54 @@ extern PidTD pid_moto_pos[2];
 extern PidTD pid_moto_spd[2];
 // 设置机械臂末端个电机角度（使用电流模式+双环pid实现）
 void Update_RoboArm_Pos(){
-	// 前三轴
-	for(int i=0;i<3;i++){
-		pid_calculate(&pid_lk_moto_pos[i], (float)LKMotoState[i].angle_desired , (float)LKMotoState[i].encoder);
-		LKMotoState[i].speed_desired = (int)pid_lk_moto_pos[i].outPID;
-		pid_calculate(&pid_lk_moto_spd[i], (float)LKMotoState[i].speed_desired , (float)LKMotoState[i].speed);
-		current_set[i] = (int)pid_lk_moto_spd[i].outPID;
+	if(!sync_data_from_a.data.power_less_flag){
+		
+		// 前三轴
+		for(int i=0;i<3;i++){
+			pid_calculate(&pid_lk_moto_pos[i], (float)LKMotoState[i].angle_desired , (float)LKMotoState[i].encoder);
+			LKMotoState[i].speed_desired = (int)pid_lk_moto_pos[i].outPID;
+			pid_calculate(&pid_lk_moto_spd[i], (float)LKMotoState[i].speed_desired , (float)LKMotoState[i].speed);
+			current_set[i] = (int)pid_lk_moto_spd[i].outPID;
+		}
+		
+	//	LKSetMotoCurrent(&hcan1,current_set[0],current_set[1],current_set[2],0); //广播模式roll会歪
+		// 单电机发送
+		LKSetMotoCurrent_single(LK_Motor1_ID,current_set[0]);
+		osDelay(1);
+		LKSetMotoCurrent_single(LK_Motor2_ID,current_set[1]);
+		osDelay(1);
+		LKSetMotoCurrent_single(LK_Motor3_ID,current_set[2]);
+		osDelay(1);
+		
+		if(qs_inited == true){
+			// 前伸
+			pid_calculate(&pid_moto_pos[1], (float)MotoState[1].angle_desired , (float)MotoState[1].angle);
+			MotoState[1].speed_desired = (int)pid_moto_pos[1].outPID;
+			pid_calculate(&pid_moto_spd[1], (float)MotoState[1].speed_desired , (float)MotoState[1].speed_actual);
+			dji_current_set[1] = (int)pid_moto_spd[1].outPID;
+			SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],0,0);
+		}
+		
+		if(hy_inited == true){
+			// 横移
+			pid_calculate(&pid_moto_pos[0], (float)MotoState[0].angle_desired , (float)MotoState[0].angle);
+			MotoState[0].speed_desired = (int)pid_moto_pos[0].outPID;
+			pid_calculate(&pid_moto_spd[0], (float)MotoState[0].speed_desired , (float)MotoState[0].speed_actual);
+			dji_current_set[0] = (int)pid_moto_spd[0].outPID;
+			SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],0,0);
+		}
+		
 	}
-	
-//	LKSetMotoCurrent(&hcan1,current_set[0],current_set[1],current_set[2],0); //广播模式roll会歪
-	// 单电机发送
-	LKSetMotoCurrent_single(LK_Motor1_ID,current_set[0]);
-	osDelay(1);
-	LKSetMotoCurrent_single(LK_Motor2_ID,current_set[1]);
-	osDelay(1);
-	LKSetMotoCurrent_single(LK_Motor3_ID,current_set[2]);
-	osDelay(1);
-	
-	if(qs_inited == true){
-		// 前伸
-		pid_calculate(&pid_moto_pos[1], (float)MotoState[1].angle_desired , (float)MotoState[1].angle);
-		MotoState[1].speed_desired = (int)pid_moto_pos[1].outPID;
-		pid_calculate(&pid_moto_spd[1], (float)MotoState[1].speed_desired , (float)MotoState[1].speed_actual);
-		dji_current_set[1] = (int)pid_moto_spd[1].outPID;
-		SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],0,0);
+	else{
+		SetMotoCurrent(&hcan1,Ahead,0,0,0,0);
+				// 单电机发送
+		LKSetMotoCurrent_single(LK_Motor1_ID,0);
+		osDelay(1);
+		LKSetMotoCurrent_single(LK_Motor2_ID,0);
+		osDelay(1);
+		LKSetMotoCurrent_single(LK_Motor3_ID,0);
+		osDelay(1);
 	}
-	
-	if(hy_inited == true){
-		// 横移
-		pid_calculate(&pid_moto_pos[0], (float)MotoState[0].angle_desired , (float)MotoState[0].angle);
-		MotoState[0].speed_desired = (int)pid_moto_pos[0].outPID;
-		pid_calculate(&pid_moto_spd[0], (float)MotoState[0].speed_desired , (float)MotoState[0].speed_actual);
-		dji_current_set[0] = (int)pid_moto_spd[0].outPID;
-		SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],0,0);
-	}
-
 }
 
 // 遥控控制前四轴
