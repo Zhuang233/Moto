@@ -52,6 +52,7 @@ osThreadId MotoHandle;
 osThreadId LEDHandle;
 osThreadId TestHandle;
 osThreadId DataSyncAnCHandle;
+osThreadId qsHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -63,6 +64,7 @@ void MotoTask(void const * argument);
 void LedTask(void const * argument);
 void TestTask(void const * argument);
 void DataSyncAnCTask(void const * argument);
+void qsTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -128,6 +130,10 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of DataSyncAnC */
   osThreadDef(DataSyncAnC, DataSyncAnCTask, osPriorityIdle, 0, 128);
   DataSyncAnCHandle = osThreadCreate(osThread(DataSyncAnC), NULL);
+
+  /* definition and creation of qs */
+  osThreadDef(qs, qsTask, osPriorityHigh, 0, 128);
+  qsHandle = osThreadCreate(osThread(qs), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -223,6 +229,24 @@ __weak void DataSyncAnCTask(void const * argument)
     osDelay(1);
   }
   /* USER CODE END DataSyncAnCTask */
+}
+
+/* USER CODE BEGIN Header_qsTask */
+/**
+* @brief Function implementing the qs thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_qsTask */
+__weak void qsTask(void const * argument)
+{
+  /* USER CODE BEGIN qsTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END qsTask */
 }
 
 /* Private application code --------------------------------------------------*/

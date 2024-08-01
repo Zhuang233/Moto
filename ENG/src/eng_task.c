@@ -13,6 +13,9 @@
 #include "uart_zbw.h"
 #include "JointReset.h"
 #include "RoboArm.h"
+#include "stdbool.h"
+
+bool qs_had_auto_reset = false;
 
 // 电机任务函数
 void MotoTask(void const * argument)
@@ -38,6 +41,7 @@ void LedTask(void const * argument)
 	roll_yaw_reseted = true;
 	osDelay(2000); //前伸复位得等3s 2006上电没那么快工作
 	reset_qs();
+	qs_had_auto_reset = true;
 	wait_lift_allow();
 	reset_hy();
   for(;;)
@@ -61,4 +65,13 @@ void DataSyncAnCTask(void const * argument){
   }
 }
 
-
+void qsTask(void const * argument){
+  for(;;)
+  {
+		// 如果上电自动复位过一次，且发现前伸复位标志被修改为未初始化，说明a板要求前伸重新复位
+		if(qs_had_auto_reset && !qs_inited){
+			reset_qs();
+		}
+		osDelay(1);
+  }
+}

@@ -69,6 +69,10 @@ void hy_init(){
 
 // 前伸位置初始化 堵转检测
 void reset_qs(){
+	start_stage = 1;
+	last_detect_angle = 0;
+	detect_time = 0;
+	detect_angle = 0;
 	qs_init();
 	duzhuan_TimeInit(&t_duzhuan);
 	GetDt(&t_duzhuan,MILLISECOND);

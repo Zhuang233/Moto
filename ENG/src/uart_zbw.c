@@ -5,6 +5,7 @@
 #include "LKMotoDriver.h"
 #include "DJIMotoDriver.h"
 #include "JointReset.h"
+#include "stdbool.h"
 
 // 同步数据
 /*
@@ -23,10 +24,20 @@
 DataUnion sync_data_from_a;
 BackDataUnion sync_data_to_a;
 uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE] = {0};
+bool first_reset_qs_flag = true;
 
 void decode_ctrl_data(){
-	if((USART1_Rx_Buffer[0] == 0x55) && (USART1_Rx_Buffer[17] == 0xAA)){
+	if((USART1_Rx_Buffer[0] == 0x55) && (USART1_Rx_Buffer[18] == 0xAA)){
 		memcpy(&sync_data_from_a, &USART1_Rx_Buffer, sizeof(sync_data_from_a));
+		
+		// 处理前伸手动重置,复位信号跳变为1，qs重新复位一次
+		if(sync_data_from_a.data.reset_qs_flag == 1 && first_reset_qs_flag){
+			first_reset_qs_flag = false;
+			qs_inited = false;
+		}
+		if(sync_data_from_a.data.reset_qs_flag == 0){
+			first_reset_qs_flag = true;
+		}
 	}
 }
 
