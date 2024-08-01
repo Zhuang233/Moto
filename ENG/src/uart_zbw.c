@@ -4,6 +4,8 @@
 #include "string.h"
 #include "LKMotoDriver.h"
 #include "DJIMotoDriver.h"
+#include "JointReset.h"
+
 // 同步数据
 /*
 瓴控前三轴位置uint16_t
@@ -34,6 +36,7 @@ void sync_data_to_a_init(){
 	sync_data_to_a.data.theta1_read = 0;
 	sync_data_to_a.data.theta2_read = 0;
 	sync_data_to_a.data.theta3_read = 0;
+	sync_data_to_a.data.reset_state = 0;
 }
 
 void data_sync_uart(){
@@ -42,7 +45,7 @@ void data_sync_uart(){
 	sync_data_to_a.data.theta3_read = LKMotoState[2].encoder;
 	sync_data_to_a.data.hy_pos_read = MotoState[0].angle;
 	sync_data_to_a.data.qs_pos_read = MotoState[1].angle;
-
+	sync_data_to_a.data.reset_state = sync_data_to_a.data.reset_state | (qs_inited << 0);
 	HAL_UART_Transmit_DMA(&huart1, sync_data_to_a.bytes, SYNC_TO_A_SIZE);
 }
 

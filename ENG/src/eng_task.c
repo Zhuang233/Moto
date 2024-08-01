@@ -19,8 +19,6 @@ void MotoTask(void const * argument)
 {	
 	RoboArm_Pos_Init();
 	RoboArm_Pid_Init();
-  osDelay(3000); //前伸复位得等3s 2006上电没那么快工作
-	reset_qs();
   for(;;)
   {
     RoboArm_UART_Ctrl();
@@ -36,6 +34,10 @@ void wait_lift_allow(){
 
 void LedTask(void const * argument)
 {
+	osDelay(1000);
+	roll_yaw_reseted = true;
+	osDelay(2000); //前伸复位得等3s 2006上电没那么快工作
+	reset_qs();
 	wait_lift_allow();
 	reset_hy();
   for(;;)

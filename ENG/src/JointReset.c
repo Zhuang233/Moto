@@ -10,6 +10,7 @@ PidTD pid_moto_pos[2];
 PidTD pid_moto_spd[2];
 
 int16_t dji_moto_current_to_send[2] = {0};
+uint8_t roll_yaw_reseted = false;
 
 // «∞…Ï-----------------------------------------
 

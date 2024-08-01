@@ -6,4 +6,5 @@ void reset_qs(void);
 void reset_hy(void);
 extern bool qs_inited;
 extern bool hy_inited;
+extern uint8_t roll_yaw_reseted;
 #endif

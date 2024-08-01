@@ -92,6 +92,7 @@ void RoboArm_Pos_Init(){
 
 extern PidTD pid_moto_pos[2];
 extern PidTD pid_moto_spd[2];
+extern uint8_t roll_yaw_reseted;
 // 设置机械臂末端个电机角度（使用电流模式+双环pid实现）
 void Update_RoboArm_Pos(){
 	if(!sync_data_from_a.data.power_less_flag){
@@ -106,8 +107,11 @@ void Update_RoboArm_Pos(){
 		
 	//	LKSetMotoCurrent(&hcan1,current_set[0],current_set[1],current_set[2],0); //广播模式roll会歪
 		// 单电机发送
-		LKSetMotoCurrent_single(LK_Motor1_ID,current_set[0]);
-		osDelay(1);
+		if(roll_yaw_reseted)
+		{
+			LKSetMotoCurrent_single(LK_Motor1_ID,current_set[0]);
+			osDelay(1);
+		}
 		LKSetMotoCurrent_single(LK_Motor2_ID,current_set[1]);
 		osDelay(1);
 		LKSetMotoCurrent_single(LK_Motor3_ID,current_set[2]);
