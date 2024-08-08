@@ -55,7 +55,7 @@ typedef float32_t *DH_Matrix;
 PidTD pid_lk_moto_spd[3];
 PidTD pid_lk_moto_pos[3];
 int16_t current_set[3];
-int16_t dji_current_set[2];
+int16_t dji_current_set[3];
 
 float32_t
 	EndToE_theta=0, EndToE_d=0, EndToE_a=0 ,EndToE_alpha=0,
@@ -82,6 +82,7 @@ void RoboArm_Pos_Init(){
 	LKMotoState[2].angle_desired = ARM_ANGLE_STD_3;
 	MotoState[0].angle_desired = ARM_ANGLE_CENTER_HY;
 	MotoState[1].angle_desired = 0;
+	MotoState[2].angle_desired = 0;
 	sync_data_from_a.data.hy_pos = ARM_ANGLE_CENTER_HY;
 	sync_data_from_a.data.qs_pos = 0;
 	sync_data_from_a.data.theta1 = ARM_ANGLE_STD_1;
@@ -90,8 +91,8 @@ void RoboArm_Pos_Init(){
 }
 
 
-extern PidTD pid_moto_pos[2];
-extern PidTD pid_moto_spd[2];
+extern PidTD pid_moto_pos[3];
+extern PidTD pid_moto_spd[3];
 extern uint8_t roll_yaw_reseted;
 // 设置机械臂末端个电机角度（使用电流模式+双环pid实现）
 void Update_RoboArm_Pos(){
@@ -123,7 +124,7 @@ void Update_RoboArm_Pos(){
 			MotoState[1].speed_desired = (int)pid_moto_pos[1].outPID;
 			pid_calculate(&pid_moto_spd[1], (float)MotoState[1].speed_desired , (float)MotoState[1].speed_actual);
 			dji_current_set[1] = (int)pid_moto_spd[1].outPID;
-			SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],0,0);
+//			SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],dji_current_set[2],0);
 		}
 		
 		if(hy_inited == true){
@@ -132,8 +133,13 @@ void Update_RoboArm_Pos(){
 			MotoState[0].speed_desired = (int)pid_moto_pos[0].outPID;
 			pid_calculate(&pid_moto_spd[0], (float)MotoState[0].speed_desired , (float)MotoState[0].speed_actual);
 			dji_current_set[0] = (int)pid_moto_spd[0].outPID;
-			SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],0,0);
+//			SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],dji_current_set[2],0);
 		}
+		pid_calculate(&pid_moto_pos[2], (float)MotoState[2].angle_desired , (float)MotoState[2].angle);
+		MotoState[2].speed_desired = (int)pid_moto_pos[2].outPID;
+		pid_calculate(&pid_moto_spd[2], (float)MotoState[2].speed_desired , (float)MotoState[2].speed_actual);
+		dji_current_set[2] = (int)pid_moto_spd[2].outPID;
+		SetMotoCurrent(&hcan1,Ahead,dji_current_set[0],dji_current_set[1],dji_current_set[2],0);
 		
 	}
 	else{

@@ -6,10 +6,10 @@
 #include "wd.h"
 
 
-PidTD pid_moto_pos[2];
-PidTD pid_moto_spd[2];
+PidTD pid_moto_pos[3];
+PidTD pid_moto_spd[3];
 
-int16_t dji_moto_current_to_send[2] = {0};
+int16_t dji_moto_current_to_send[3] = {0};
 uint8_t roll_yaw_reseted = false;
 
 // 前伸-----------------------------------------
@@ -50,6 +50,22 @@ PidTD* pid_hy_pos = &pid_moto_pos[0];
 
 // 横移-----------------------------------------
 
+// 末端roll-------------------------------------
+#define LAST_ROLL_POS_P 0.05
+#define LAST_ROLL_POS_I 0
+#define LAST_ROLL_POS_D 0
+#define LAST_ROLL_SPD_P 10
+#define LAST_ROLL_SPD_I 1
+#define LAST_ROLL_SPD_D 0
+
+PidTD* pid_last_roll_spd = &pid_moto_spd[2];
+PidTD* pid_last_roll_pos = &pid_moto_pos[2];
+
+
+// 末端roll-------------------------------------
+
+
+
 
 void duzhuan_TimeInit(TimeTD *time);
 void qs_init();
@@ -65,6 +81,12 @@ void hy_init(){
 	pidInit(pid_hy_pos, 2000, 10000, HY_POS_P, HY_POS_I, HY_POS_D);
 	pidInit(pid_hy_spd, 3000, 10000, 20, HY_SPD_I, HY_SPD_D);
 	MotoStateInit(&MotoState[0]);
+}
+
+void last_roll_init(){
+	pidInit(pid_last_roll_pos, 2000, 10000, LAST_ROLL_POS_P, LAST_ROLL_POS_P, LAST_ROLL_POS_D);
+	pidInit(pid_last_roll_spd, 3000, 10000, LAST_ROLL_SPD_P, LAST_ROLL_SPD_I, LAST_ROLL_SPD_D);
+	MotoStateInit(&MotoState[2]);
 }
 
 // 前伸位置初始化 堵转检测
@@ -92,11 +114,11 @@ void reset_qs(){
 				// 速度环
 				pid_calculate_inc(pid_qs_spd, qs_reset_speed, MotoState[1].speed_actual);
 				dji_moto_current_to_send[1] = pid_qs_spd->outPID;
-				SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], 0, 0);
+				SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
 		}
 		else{
 			dji_moto_current_to_send[1] = 0;
-			SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], 0, 0);
+			SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
 			osDelay(20);
 			pidInit(pid_qs_pos, 2000, QS_POS_OUT_LIMIT, QS_POS_P, QS_POS_I, QS_POS_D);
 			pidInit(pid_qs_spd, 2000, 10000, QS_SPD_P, QS_SPD_I, QS_SPD_D);
@@ -123,11 +145,11 @@ void reset_hy(){
 			// 速度环
 			pid_calculate_inc(pid_hy_spd, speed, MotoState[0].speed_actual);
 			dji_moto_current_to_send[0] = pid_hy_spd->outPID;
-			SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], 0, 0);
+			SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
 		}
 		else{
 			dji_moto_current_to_send[0] = 0;
-			SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], 0, 0);
+			SetMotoCurrent(&hcan1, Ahead, dji_moto_current_to_send[0], dji_moto_current_to_send[1], dji_moto_current_to_send[2], 0);
 			osDelay(20);
 			pidInit(pid_hy_pos, 2000, 3000, HY_POS_P, HY_POS_I, HY_POS_D);
 			pidInit(pid_hy_spd, 2000, 10000, HY_SPD_P, HY_SPD_I, HY_SPD_D);

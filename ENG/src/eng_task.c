@@ -41,6 +41,7 @@ void LedTask(void const * argument)
 	roll_yaw_reseted = true;
 	osDelay(2000); //前伸复位得等3s 2006上电没那么快工作
 	reset_qs();
+	last_roll_init();
 	qs_had_auto_reset = true;
 	wait_lift_allow();
 	reset_hy();
