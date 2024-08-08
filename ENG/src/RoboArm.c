@@ -196,6 +196,9 @@ void RoboArm_UART_Ctrl(){
 	MotoState[0].angle_desired = sync_data_from_a.data.hy_pos;
 	if(MotoState[0].angle_desired > -10000) MotoState[0].angle_desired = -10000;
 	if(MotoState[0].angle_desired < -ARM_ANGLE_MAX_HY) MotoState[0].angle_desired = -ARM_ANGLE_MAX_HY;
+	
+	MotoState[2].angle_desired = sync_data_from_a.data.last_roll_pos;
+	
 }
 
 

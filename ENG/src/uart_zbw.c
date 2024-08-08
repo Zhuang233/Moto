@@ -27,7 +27,7 @@ uint8_t		USART1_Rx_Buffer[USART1_RX_BUFFER_SIZE] = {0};
 bool first_reset_qs_flag = true;
 
 void decode_ctrl_data(){
-	if((USART1_Rx_Buffer[0] == 0x55) && (USART1_Rx_Buffer[18] == 0xAA)){
+	if((USART1_Rx_Buffer[0] == 0x55) && (USART1_Rx_Buffer[22] == 0xAA)){
 		memcpy(&sync_data_from_a, &USART1_Rx_Buffer, sizeof(sync_data_from_a));
 		
 		// 处理前伸手动重置,复位信号跳变为1，qs重新复位一次
